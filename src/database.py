@@ -1,11 +1,9 @@
 import sqlite3 as sql
 from src.models import Asset, Employee, Assignment
 
-DB_NAME = "data.db"
 
-
-def setup_database() -> None:
-    with sql.connect(DB_NAME) as conn:
+def setup_database(db_name: str) -> None:
+    with sql.connect(db_name) as conn:
         cursor = conn.cursor()
         cursor.execute("PRAGMA foreign_keys = ON;")
 
@@ -61,6 +59,36 @@ class Database_manager:
             cursor = conn.cursor()
 
             cursor.execute(
+                "SELECT is_active FROM employees WHERE id=:emp_id",
+                {"emp_id": assign.employee_id},
+            )
+            result = cursor.fetchone()
+
+            if result is None:
+                raise ValueError(f"Employee ID {assign.employee_id} does not exist.")
+
+            if result[0] == 0:
+                raise ValueError(
+                    f"Cannot assign asset to Employee {assign.employee_id} because they are offboarded/inactive."
+                )
+
+            cursor.execute(
+                "SELECT status FROM assets WHERE id=:asset_id",
+                {"asset_id": assign.asset_id},
+            )
+            asset_result = cursor.fetchone()
+
+            if asset_result is None:
+                raise ValueError(f"Asset ID {assign.asset_id} does not exist.")
+
+            current_status = asset_result[0]
+
+            if current_status != "AVAILABLE":
+                raise ValueError(
+                    f"Asset {assign.asset_id} is currently '{current_status}'. Only AVAILABLE assets can be assigned"
+                )
+
+            cursor.execute(
                 "INSERT INTO assignments(asset_id,employee_id,assigned_date) VALUES(:asset,:emp,:assig)",
                 {
                     "asset": assign.asset_id,
@@ -90,6 +118,27 @@ class Database_manager:
                 {"asset_id": asset_id},
             )
 
+            if cursor.rowcount == 0:
+                raise ValueError(f"Asset {asset_id} does not exist.")
+
+    def update_asset_status(self, asset_id: int, new_status: str) -> None:
+        valid_statuses = ["AVAILABLE", "ASSIGNED", "MAINTENANCE", "RETIRED"]
+
+        if new_status not in valid_statuses:
+            raise ValueError(
+                f"Invalid Status: '{new_status}'. Must be one of {valid_statuses}"
+            )
+
+        with sql.connect(self.db_name) as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "UPDATE assets SET status=:stat WHERE id=:asset_id",
+                {"stat": new_status, "asset_id": asset_id},
+            )
+
+        if cursor.rowcount == 0:
+            raise ValueError(f"Asset ID {asset_id} not found.")
+
     def offboard_employee(self, employee_id: int) -> None:
         with sql.connect(self.db_name) as conn:
             cursor = conn.cursor()
@@ -97,6 +146,20 @@ class Database_manager:
             cursor.execute(
                 "UPDATE employees SET is_active=0 WHERE id=:id", {"id": employee_id}
             )
+            if cursor.rowcount == 0:
+                raise ValueError(f"Employee ID {employee_id} not found.")
+
+    def get_all_assets(self) -> list:
+        with sql.connect(self.db_name) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM assets")
+            return cursor.fetchall()
+
+    def get_all_employees(self) -> list:
+        with sql.connect(self.db_name) as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM employees")
+            return cursor.fetchall()
 
     def get_active_assignments(self) -> list[tuple[str, str, str]]:
         with sql.connect(self.db_name) as conn:

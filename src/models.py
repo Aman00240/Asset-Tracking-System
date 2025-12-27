@@ -21,15 +21,16 @@ class Asset:
         if not self.name:
             raise ValueError("Asset name cant be empty")
 
-        valid_status = ["AVAILABLE", "ASSIGNED", "MAINTENANCE", "RETIRED"]
-
-        if self.status not in valid_status:
-            raise ValueError(
-                f"Invalid Status: {self.status}. Must be one of {valid_status}"
-            )
-
         if self.id is not None and not isinstance(self.id, int):
             raise ValueError(f"ID must be a number, got{type(self.id)}")
+
+        if self.name.isdigit():
+            raise ValueError(
+                "Asset name cannot be just numbers (e.g. '23'). Try 'Laptop 23' instead."
+            )
+
+        if self.category.isdigit():
+            raise ValueError("Category cannot be just numbers.")
 
 
 @dataclass
@@ -48,6 +49,16 @@ class Employee:
 
         if self.id is not None and not isinstance(self.id, int):
             raise ValueError(f"ID must be a number, got{type(self.id)}")
+
+        if any(char.isdigit() for char in self.name):
+            raise ValueError(
+                f"Employee name cannot contain numbers. You typed: '{self.name}'"
+            )
+
+        if self.department.isdigit():
+            raise ValueError(
+                f"Department cannot be just numbers (You typed: '{self.department}')"
+            )
 
         if self.is_active not in (1, 0):
             raise ValueError(

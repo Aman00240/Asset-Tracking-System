@@ -21,6 +21,9 @@ class Asset:
         if not self.name:
             raise ValueError("Asset name cant be empty")
 
+        if not self.category:
+            raise ValueError("Category cannot be empty")
+
         if self.id is not None and not isinstance(self.id, int):
             raise ValueError(f"ID must be a number, got{type(self.id)}")
 
@@ -46,6 +49,9 @@ class Employee:
 
         if not self.name:
             raise ValueError("Employee name cant be empty")
+
+        if not self.department:
+            raise ValueError("Department name cant be empty")
 
         if self.id is not None and not isinstance(self.id, int):
             raise ValueError(f"ID must be a number, got{type(self.id)}")

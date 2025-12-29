@@ -131,13 +131,27 @@ class Database_manager:
 
         with sql.connect(self.db_name) as conn:
             cursor = conn.cursor()
+
+            cursor.execute(
+                "SELECT status FROM assets WHERE id=:asset_id", {"asset_id": asset_id}
+            )
+            result = cursor.fetchone()
+
+            if result is None:
+                raise ValueError(f"Asset ID {asset_id} not found.")
+
+            current_status = result[0]
+
+            if current_status == "ASSIGNED" and new_status != "ASSIGNED":
+                raise ValueError(
+                    f"Cannot change status to {new_status}. Asset {asset_id} is currently ASSIGNED. "
+                    "Please return the asset from the employee first."
+                )
+
             cursor.execute(
                 "UPDATE assets SET status=:stat WHERE id=:asset_id",
                 {"stat": new_status, "asset_id": asset_id},
             )
-
-        if cursor.rowcount == 0:
-            raise ValueError(f"Asset ID {asset_id} not found.")
 
     def offboard_employee(self, employee_id: int) -> None:
         with sql.connect(self.db_name) as conn:

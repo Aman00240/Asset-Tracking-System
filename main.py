@@ -162,11 +162,11 @@ def print_menu() -> None:
     print("2. Add New Employee")
     print("3. Assign Asset")
     print("4. Return Asset")
-    print("5. Offboard Employee")
-    print("6. View Active Assignments")
-    print("7. View All Assets")
-    print("8. View All Employees")
-    print("9. Set Asset Status (Maintenance/Retired)")
+    print("5. Set Asset Status (Maintenance/Retired)")
+    print("6. Offboard Employee")
+    print("7. View Active Assignments")
+    print("8. View All Assets")
+    print("9. View All Employees")
     print("0. Exit")
     print("=" * 40)
 
@@ -192,15 +192,16 @@ def main() -> None:
             case "4":
                 handle_return_asset(db)
             case "5":
-                handle_offboard_employee(db)
-            case "6":
-                get_assignments(db)
-            case "7":
-                handle_list_assets(db)
-            case "8":
-                handle_list_employees(db)
-            case "9":
                 handle_update_status(db)
+            case "6":
+                handle_offboard_employee(db)
+            case "7":
+                get_assignments(db)
+            case "8":
+                handle_list_assets(db)
+            case "9":
+                handle_list_employees(db)
+
             case "0":
                 print("Exiting....")
                 break

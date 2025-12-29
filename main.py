@@ -5,7 +5,7 @@ DB_NAME = "data.db"
 
 
 def handle_add_asset(db: Database_manager) -> None:
-    print("-- Add New Asset --")
+    print("-- Add New Asset --\n")
 
     name_input = input("Asset Name: ")
     cat_input = input("Category: ")
@@ -13,14 +13,14 @@ def handle_add_asset(db: Database_manager) -> None:
     try:
         new_asset = Asset(name=name_input, category=cat_input)
         db.add_assets(new_asset)
-        print("-- Asset Added Sucessfully --")
+        print("-- Asset Added Sucessfully --\n")
 
     except ValueError as e:
         print(f"ERROR: {e}")
 
 
 def handle_update_status(db: Database_manager) -> None:
-    print("\n--- Update Asset Status ---")
+    print("\n--- Update Asset Status ---\n")
     asset_id_input = input("Asset ID: ")
 
     print("Options: MAINTENANCE, RETIRED")
@@ -37,7 +37,7 @@ def handle_update_status(db: Database_manager) -> None:
 
 
 def handle_add_employee(db: Database_manager) -> None:
-    print("-- Add New Employee")
+    print("-- Add New Employee --\n")
 
     name_input = input("Employee Name: ")
     dept_input = input("Department Name: ")
@@ -46,14 +46,14 @@ def handle_add_employee(db: Database_manager) -> None:
         new_employee = Employee(name=name_input, department=dept_input)
         db.add_employees(new_employee)
 
-        print("-- Employee Added Sucessfully --")
+        print("-- Employee Added Sucessfully --\n")
 
     except ValueError as e:
         print(f"ERROR: {e}")
 
 
 def handle_assign_asset(db: Database_manager) -> None:
-    print("-- Assign Asset --")
+    print("-- Assign Asset --\n")
 
     asset_id_input = input("Asset ID: ")
     emp_id_input = input("Employee ID: ")
@@ -75,14 +75,14 @@ def handle_assign_asset(db: Database_manager) -> None:
             )
 
         db.assign_asset(new_assign)
-        print("-- Asset Assigned Sucessfully --")
+        print("-- Asset Assigned Sucessfully --\n")
 
     except ValueError as e:
         print(f"ERROR: {e}")
 
 
 def handle_return_asset(db: Database_manager) -> None:
-    print("-- Return Asset --")
+    print("-- Return Asset --\n")
 
     asset_id_input = input("Asset ID: ")
 
@@ -96,14 +96,14 @@ def handle_return_asset(db: Database_manager) -> None:
         asset_id = int(asset_id_input)
         db.return_asset(asset_id, today)
 
-        print("-- Asset Returned --")
+        print("-- Asset Returned --\n")
 
     except ValueError as e:
         print(f"ERROR: {e}")
 
 
 def handle_offboard_employee(db: Database_manager) -> None:
-    print("--Offboard Employee --")
+    print("--Offboard Employee --\n")
 
     emp_id_input = input("Employee ID:")
 
@@ -115,14 +115,14 @@ def handle_offboard_employee(db: Database_manager) -> None:
         emp_id = int(emp_id_input)
 
         db.offboard_employee(emp_id)
-        print("-- Employee offboarded --")
+        print("-- Employee offboarded --\n")
 
     except ValueError as e:
         print(f"ERROR: {e}")
 
 
 def handle_list_assets(db: Database_manager) -> None:
-    print("\n--- All Assets ---")
+    print("\n--- All Assets ---\n")
     assets = db.get_all_assets()
 
     print(f"{'ID':<5} | {'NAME':<20} | {'CATEGORY':<15} | {'STATUS':<12}")
@@ -133,7 +133,7 @@ def handle_list_assets(db: Database_manager) -> None:
 
 
 def handle_list_employees(db: Database_manager) -> None:
-    print("\n--- All Employees ---")
+    print("\n--- All Employees ---\n")
     emps = db.get_all_employees()
 
     print(f"{'ID':<5} | {'NAME':<20} | {'DEPT':<15} | {'ACTIVE':<12}")
@@ -201,7 +201,6 @@ def main() -> None:
                 handle_list_assets(db)
             case "9":
                 handle_list_employees(db)
-
             case "0":
                 print("Exiting....")
                 break

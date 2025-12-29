@@ -124,6 +124,13 @@ class Database_manager:
     def update_asset_status(self, asset_id: int, new_status: str) -> None:
         valid_statuses = ["AVAILABLE", "ASSIGNED", "MAINTENANCE", "RETIRED"]
 
+        if new_status == "ASSIGNED":
+            raise ValueError(
+                "   Cannot manually set status to ASSIGNED.\n"
+                "   To assign an asset, please use Option 3 (Assign Asset) from the main menu\n"
+                "   so it can be properly linked to an employee.\n"
+            )
+
         if new_status not in valid_statuses:
             raise ValueError(
                 f"Invalid Status: '{new_status}'. Must be one of {valid_statuses}"

@@ -145,6 +145,7 @@ def handle_list_employees(db: Database_manager) -> None:
 
 
 def get_assignments(db: Database_manager) -> None:
+    print("\n--- All ASSIGNMENTS ---\n")
     rows = db.get_active_assignments()
 
     print(f"{'EMPLOYEE':<20} | {'ASSET':<20} | {'DATE':12}")
